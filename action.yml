@@ -218,6 +218,23 @@ inputs:
     description: 'OTLP endpoint URL for trace export'
     required: false
     default: 'http://localhost:4317'
+  
+  # LangSmith Observability
+  langchain_tracing_v2:
+    description: 'Enable LangSmith tracing (true/false)'
+    required: false
+    default: 'false'
+  langchain_api_key:
+    description: 'LangSmith API Key'
+    required: false
+  langchain_project:
+    description: 'LangSmith Project Name'
+    required: false
+    default: 'dockai'
+  langchain_endpoint:
+    description: 'LangSmith Endpoint'
+    required: false
+    default: 'https://api.smith.langchain.com'
 
 runs:
   using: "composite"
@@ -293,7 +310,13 @@ runs:
         # Observability & Tracing
         DOCKAI_ENABLE_TRACING: ${{ inputs.enable_tracing }}
         DOCKAI_TRACING_EXPORTER: ${{ inputs.tracing_exporter }}
+        DOCKAI_TRACING_EXPORTER: ${{ inputs.tracing_exporter }}
         OTEL_EXPORTER_OTLP_ENDPOINT: ${{ inputs.otlp_endpoint }}
+        # LangSmith Observability
+        LANGCHAIN_TRACING_V2: ${{ inputs.langchain_tracing_v2 }}
+        LANGCHAIN_API_KEY: ${{ inputs.langchain_api_key }}
+        LANGCHAIN_PROJECT: ${{ inputs.langchain_project }}
+        LANGCHAIN_ENDPOINT: ${{ inputs.langchain_endpoint }}
       run: |
         echo "🐳 Starting DockAI Framework..."
         dockai build ${{ inputs.project_path }} --no-cache
