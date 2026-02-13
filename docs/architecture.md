@@ -107,14 +107,16 @@ graph TD
     Review -->|Insecure| Reflect
     
     Validate -->|Success| End([Success])
-    Validate -->|Fail| Reflect[Agent : Reflector]
+    Validate -->|Fail| ErrorAnalyze[Agent : Error Analyzer]
+    ErrorAnalyze --> Reflect[Agent : Reflector]
     
     Reflect --> IncRetry[Increment Retry]
     IncRetry --> Route{Route Fix}
     
     Route -->|Re-Analyze| Analyze
     Route -->|Re-Plan| Blueprint
-    Route -->|Fix Code| Generate
+    Route -->|Iterative Fix| GenIterative[Agent : Generator Iterative<br/>+ Iterative Improver]
+    Route -->|Fresh Generate| Generate
     
     Reflect -->|Max Retries| EndFail([Fail / Revert to Best])
 ```
