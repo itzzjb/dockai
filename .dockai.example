@@ -45,13 +45,6 @@ Organization Dockerfile standards:
 - Use --no-cache-dir for pip installs
 - Copy only necessary files (not tests, docs, etc.)
 
-[instructions_generator_iterative]
-When fixing Dockerfile issues:
-- Preserve all existing comments
-- Keep the multi-stage build structure
-- Don't change the base image unless necessary
-- Ensure backward compatibility with existing CI/CD
-
 [instructions_reviewer]
 Security standards for this organization:
 - No packages with HIGH or CRITICAL CVEs
@@ -160,23 +153,6 @@ Generate a complete Dockerfile with:
 - Optimized layers
 - Security best practices
 - Helpful comments
-
-[prompt_generator_iterative]
-You are a Docker expert fixing a failed Dockerfile.
-
-CURRENT DOCKERFILE:
-{dockerfile}
-
-ERROR:
-{error}
-
-REVIEW FEEDBACK:
-{review}
-
-Fix the Dockerfile addressing the error while:
-- Preserving working parts
-- Adding comments for changes
-- Maintaining security practices
 
 [prompt_reviewer]
 You are a container security engineer reviewing a Dockerfile.

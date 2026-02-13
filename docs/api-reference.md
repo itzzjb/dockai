@@ -730,7 +730,6 @@ The `config` dictionary inside `DockAIState` contains per-agent custom instructi
     "analyzer_instructions": str,
     "blueprint_instructions": str,
     "generator_instructions": str,
-    "generator_iterative_instructions": str,
     "reviewer_instructions": str,
     "reflector_instructions": str,
     "error_analyzer_instructions": str,

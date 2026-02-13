@@ -153,7 +153,6 @@ DockAI allows per-agent model configuration for cost optimization.
 | **Analyzer** | `DOCKAI_MODEL_ANALYZER` | `gpt-4o-mini` | `gemini-1.5-flash` |
 | **Blueprint** | `DOCKAI_MODEL_BLUEPRINT` | `gpt-4o` | `gemini-1.5-pro` |
 | **Generator** | `DOCKAI_MODEL_GENERATOR` | `gpt-4o` | `gemini-1.5-pro` |
-| **Generator Iterative** | `DOCKAI_MODEL_GENERATOR_ITERATIVE` | `gpt-4o` | `gemini-1.5-pro` |
 | **Reviewer** | `DOCKAI_MODEL_REVIEWER` | `gpt-4o-mini` | `gemini-1.5-flash` |
 | **Reflector** | `DOCKAI_MODEL_REFLECTOR` | `gpt-4o` | `gemini-1.5-pro` |
 | **Error Analyzer** | `DOCKAI_MODEL_ERROR_ANALYZER` | `gpt-4o-mini` | `gemini-1.5-flash` |
@@ -365,9 +364,6 @@ export DOCKAI_BLUEPRINT_INSTRUCTIONS="Prefer multi-stage builds. Use Alpine Linu
 # Generator: Dockerfile creation
 export DOCKAI_GENERATOR_INSTRUCTIONS="Always pin all package versions. Include a maintainer label."
 
-# Generator Iterative: Debugging fixes
-export DOCKAI_GENERATOR_ITERATIVE_INSTRUCTIONS="Make minimal changes. Explain your reasoning."
-
 # Reviewer: Security audit
 export DOCKAI_REVIEWER_INSTRUCTIONS="Flag any internet downloads without checksum verification."
 
@@ -406,7 +402,6 @@ Custom prompts **completely replace** the default prompts. Use them for full con
 export DOCKAI_PROMPT_ANALYZER="..."        # Full replacement for analyzer prompt
 export DOCKAI_PROMPT_BLUEPRINT="..."       # Full replacement for blueprint prompt
 export DOCKAI_PROMPT_GENERATOR="..."       # Full replacement for generator prompt
-export DOCKAI_PROMPT_GENERATOR_ITERATIVE="..."
 export DOCKAI_PROMPT_REVIEWER="..."
 export DOCKAI_PROMPT_REFLECTOR="..."
 export DOCKAI_PROMPT_ERROR_ANALYZER="..."
@@ -555,7 +550,6 @@ DOCKAI_LLM_CACHING=true
 | `DOCKAI_MODEL_ANALYZER` | string | (provider default) | Analyzer model |
 | `DOCKAI_MODEL_BLUEPRINT` | string | (provider default) | Blueprint model |
 | `DOCKAI_MODEL_GENERATOR` | string | (provider default) | Generator model |
-| `DOCKAI_MODEL_GENERATOR_ITERATIVE` | string | (provider default) | Iterative generator model |
 | `DOCKAI_MODEL_REVIEWER` | string | (provider default) | Reviewer model |
 | `DOCKAI_MODEL_REFLECTOR` | string | (provider default) | Reflector model |
 | `DOCKAI_MODEL_ERROR_ANALYZER` | string | (provider default) | Error analyzer model |

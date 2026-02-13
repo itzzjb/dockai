@@ -49,7 +49,6 @@ graph TB
         A5[Reflector<br/>Agent]
         A6[Error<br/>Analyzer]
         A7[Iterative<br/>Improver]
-        A8[Generator<br/>Iterative]
     end
     
     subgraph Layer4["Layer 4: Context & Intelligence"]
@@ -115,7 +114,7 @@ graph TD
     
     Route -->|Re-Analyze| Analyze
     Route -->|Re-Plan| Blueprint
-    Route -->|Iterative Fix| GenIterative[Agent : Generator Iterative<br/>+ Iterative Improver]
+    Route -->|Iterative Fix| GenIterative[Agent : Iterative Improver]
     Route -->|Fresh Generate| Generate
     
     Reflect -->|Max Retries| EndFail([Fail / Revert to Best])
@@ -371,14 +370,13 @@ In addition to semantic search, DockAI extracts structural information via AST p
 DockAI v4.0 features 8 specialized agents, each with a distinct role:
 
 ### Agent Roles & Responsibilities
-The workload is distributed among **8 specialized AI agents**, each with a distinct prompt and role:
+The workload is distributed among **7 specialized AI agents**, each with a distinct prompt and role:
 
 | Agent | Role | Model Type | Task |
 |-------|------|-----------|------|
 | **Analyzer** | Project Detective | Lightweight | Identifies tech stack, frameworks, packages, and project structure. |
 | **Blueprint** | Chief Architect | Strong Reasoning | Creates the strategic build plan (base images, multi-stage strategy) and runtime config. |
 | **Generator** | Code Author | Best Available | Translates the blueprint into syntactically correct Dockerfile code. |
-| **Generator Iterative** | Refinement Engineer | Best Available | Refines existing Dockerfiles based on reflection and error feedback. |
 | **Reviewer** | Security Auditor | Lightweight | Performs static security analysis (secrets, root user, vulnerabilities). |
 | **Reflector** | Post-Mortem Analyst | Strong Reasoning | Analyzes build logs/errors to diagnose the *root cause* of failures. |
 | **Error Analyzer** | Troubleshooter | Lightweight | Classifies errors (Project vs Dockerfile vs Env) to determine recoverability. |

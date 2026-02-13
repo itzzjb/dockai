@@ -21,7 +21,6 @@ DockAI v4.0 features a sophisticated multi-agent system orchestrated by LangGrap
 - **Analyzer Agent**: Project discovery and technology stack detection
 - **Blueprint Agent**: Architectural planning and runtime configuration
 - **Generator Agent**: Dockerfile creation with best practices
-- **Generator Iterative Agent**: Refining existing Dockerfiles based on feedback
 - **Reviewer Agent**: Security auditing and vulnerability detection
 - **Reflector Agent**: Failure analysis and adaptive learning
 - **Error Analyzer Agent**: Classification of build/runtime errors for better recovery
@@ -78,7 +77,7 @@ graph TD
     
     Route -->|Re-Analyze| Analyze
     Route -->|Re-Plan| Blueprint
-    Route -->|Iterative Fix| GenIterative[Agent : Generator Iterative<br/>+ Iterative Improver]
+    Route -->|Iterative Fix| GenIterative[Agent : Iterative Improver]
     Route -->|Fresh Generate| Generate
     
     Reflect -->|Max Retries| EndFail([Fail / Revert to Best])
@@ -88,7 +87,7 @@ graph TD
 
 - **LangGraph Workflow Engine**: Orchestrates the agent flow with conditional routing
 - **RAG Context Engine**: In-memory vector store for semantic code search using sentence-transformers
-- **Multi-Agent System**: 8 specialized AI agents for different tasks (Analyzer, Blueprint, Generator, Generator Iterative, Reviewer, Reflector, Error Analyzer, Iterative Improver)
+- **Multi-Agent System**: 7 specialized AI agents for different tasks (Analyzer, Blueprint, Generator, Reviewer, Reflector, Error Analyzer, Iterative Improver)
 - **Validation Pipeline**: Docker build, Hadolint linting, Trivy security scanning, and health checks
 - **State Management**: Centralized `DockAIState` TypedDict for workflow coordination
 - **Fallback Strategy**: Reverts to the last working Dockerfile if max retries are reached

@@ -48,10 +48,6 @@ inputs:
     description: 'Model for generator agent (default: gpt-4o for openai, gemini-1.5-pro for gemini)'
     required: false
     default: ''
-  model_generator_iterative:
-    description: 'Model for iterative generator agent'
-    required: false
-    default: ''
   model_reviewer:
     description: 'Model for security reviewer agent'
     required: false
@@ -151,10 +147,6 @@ inputs:
     description: 'Custom instructions for the blueprint agent (Chief Architect)'
     required: false
     default: ''
-  generator_iterative_instructions:
-    description: 'Custom instructions for iterative improvement (debugging agent)'
-    required: false
-    default: ''
   reviewer_instructions:
     description: 'Custom instructions for security review (auditor agent)'
     required: false
@@ -182,10 +174,6 @@ inputs:
     default: ''
   prompt_generator:
     description: 'Custom prompt - Dockerfile reasoning and creation agent'
-    required: false
-    default: ''
-  prompt_generator_iterative:
-    description: 'Custom prompt - debugging and surgical fix agent'
     required: false
     default: ''
   prompt_reviewer:
@@ -287,7 +275,6 @@ runs:
         DOCKAI_MODEL_ANALYZER: ${{ inputs.model_analyzer }}
         DOCKAI_MODEL_BLUEPRINT: ${{ inputs.model_blueprint }}
         DOCKAI_MODEL_GENERATOR: ${{ inputs.model_generator }}
-        DOCKAI_MODEL_GENERATOR_ITERATIVE: ${{ inputs.model_generator_iterative }}
         DOCKAI_MODEL_REVIEWER: ${{ inputs.model_reviewer }}
         DOCKAI_MODEL_REFLECTOR: ${{ inputs.model_reflector }}
         DOCKAI_MODEL_ERROR_ANALYZER: ${{ inputs.model_error_analyzer }}
@@ -317,7 +304,6 @@ runs:
         DOCKAI_ANALYZER_INSTRUCTIONS: ${{ inputs.analyzer_instructions }}
         DOCKAI_GENERATOR_INSTRUCTIONS: ${{ inputs.generator_instructions }}
         DOCKAI_BLUEPRINT_INSTRUCTIONS: ${{ inputs.blueprint_instructions }}
-        DOCKAI_GENERATOR_ITERATIVE_INSTRUCTIONS: ${{ inputs.generator_iterative_instructions }}
         DOCKAI_REVIEWER_INSTRUCTIONS: ${{ inputs.reviewer_instructions }}
         DOCKAI_REFLECTOR_INSTRUCTIONS: ${{ inputs.reflector_instructions }}
         DOCKAI_ERROR_ANALYZER_INSTRUCTIONS: ${{ inputs.error_analyzer_instructions }}
@@ -326,7 +312,6 @@ runs:
         DOCKAI_PROMPT_ANALYZER: ${{ inputs.prompt_analyzer }}
         DOCKAI_PROMPT_BLUEPRINT: ${{ inputs.prompt_blueprint }}
         DOCKAI_PROMPT_GENERATOR: ${{ inputs.prompt_generator }}
-        DOCKAI_PROMPT_GENERATOR_ITERATIVE: ${{ inputs.prompt_generator_iterative }}
         DOCKAI_PROMPT_REVIEWER: ${{ inputs.prompt_reviewer }}
         DOCKAI_PROMPT_REFLECTOR: ${{ inputs.prompt_reflector }}
         DOCKAI_PROMPT_ERROR_ANALYZER: ${{ inputs.prompt_error_analyzer }}

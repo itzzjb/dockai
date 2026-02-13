@@ -165,30 +165,6 @@ CMD ["python", "app.py"]""",
         
         assert "alpine" in dockerfile.lower()
     
-    @patch("dockai.agents.generator._generate_iterative_dockerfile")
-    @patch("dockai.agents.generator.create_llm")
-    def test_generate_iterative_with_reflection(self, mock_create_llm, mock_iterative):
-        """Test iterative generation with reflection."""
-        mock_llm = MagicMock()
-        mock_create_llm.return_value = mock_llm
-        
-        mock_iterative.return_value = (
-            "FROM python:3.11\nRUN apt-get update && apt-get install -y gcc",
-            "service",
-            "Fixed missing gcc",
-            {"total_tokens": 100, "prompt_tokens": 80, "completion_tokens": 20}
-        )
-        
-        context = AgentContext(
-            analysis_result={"stack": "Python"},
-            file_contents="numpy",
-            dockerfile_content="FROM python:3.11-slim\nRUN pip install numpy",
-            reflection={"root_cause_analysis": "Missing gcc", "specific_fixes": ["Install gcc"]}
-        )
-        dockerfile, project_type, thought_process, usage = generate_dockerfile(context=context)
-        
-        assert "gcc" in dockerfile
-    
     @patch("dockai.agents.generator.TokenUsageCallback")
     @patch("dockai.agents.generator.ChatPromptTemplate")
     @patch("dockai.agents.generator.create_llm")

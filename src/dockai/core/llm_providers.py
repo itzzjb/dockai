@@ -21,7 +21,6 @@ Per-Agent Model Configuration:
 - DOCKAI_MODEL_ANALYZER: Model for the analyzer agent
 - DOCKAI_MODEL_BLUEPRINT: Model for the blueprint agent
 - DOCKAI_MODEL_GENERATOR: Model for the generator agent
-- DOCKAI_MODEL_GENERATOR_ITERATIVE: Model for iterative generation
 - DOCKAI_MODEL_REVIEWER: Model for the security reviewer
 - DOCKAI_MODEL_REFLECTOR: Model for failure reflection
 - DOCKAI_MODEL_ERROR_ANALYZER: Model for error classification
@@ -76,7 +75,6 @@ AGENT_MODEL_TYPE = {
     "analyzer": "fast",
     "blueprint": "powerful", # Blueprint needs powerful model for planning
     "generator": "powerful",
-    "generator_iterative": "powerful",
     "reviewer": "fast",
     "reflector": "powerful",
     "error_analyzer": "fast",
@@ -218,7 +216,6 @@ def load_llm_config_from_env() -> LLMConfig:
         "analyzer": "DOCKAI_MODEL_ANALYZER",
         "blueprint": "DOCKAI_MODEL_BLUEPRINT", 
         "generator": "DOCKAI_MODEL_GENERATOR",
-        "generator_iterative": "DOCKAI_MODEL_GENERATOR_ITERATIVE",
         "reviewer": "DOCKAI_MODEL_REVIEWER",
         "reflector": "DOCKAI_MODEL_REFLECTOR",
         "error_analyzer": "DOCKAI_MODEL_ERROR_ANALYZER",
