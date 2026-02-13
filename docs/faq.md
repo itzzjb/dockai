@@ -167,11 +167,11 @@ Yes! Use Ollama:
 
 ```bash
 ollama serve
-ollama pull llama3.1
+ollama pull llama3
 
 export DOCKAI_LLM_PROVIDER="ollama"
-export DOCKAI_MODEL_ANALYZER="llama3.1"
-export DOCKAI_MODEL_GENERATOR="llama3.1"
+export DOCKAI_MODEL_ANALYZER="llama3"
+export DOCKAI_MODEL_GENERATOR="llama3"
 
 dockai build .
 ```

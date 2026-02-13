@@ -8,7 +8,7 @@ branding:
 inputs:
   # LLM Provider Configuration
   llm_provider:
-    description: 'LLM provider to use (openai, azure, gemini, anthropic)'
+    description: 'LLM provider to use (openai, azure, gemini, anthropic, ollama)'
     required: false
     default: 'openai'
   openai_api_key:
@@ -123,9 +123,9 @@ inputs:
     required: false
     default: 'false'
   token_limit:
-    description: 'Token threshold that auto-enables truncation (default: 100000)'
+    description: 'Token threshold that auto-enables truncation (default: 50000)'
     required: false
-    default: '100000'
+    default: '50000'
   use_rag:
     description: 'Enable RAG (Retrieval-Augmented Generation) for intelligent context retrieval (true/false, default: true in v4.0)'
     required: false

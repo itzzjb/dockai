@@ -720,71 +720,55 @@ class RetryAttempt(TypedDict):
 
 ## Configuration Schema
 
-Complete configuration dictionary structure (built from environment variables in `cli/main.py`):
+The `config` dictionary inside `DockAIState` contains per-agent custom instructions and build options. Most settings (LLM provider, models, validation flags, RAG, etc.) are read directly from environment variables by each module, not from this dict.
+
+**Actual `config` dict structure** (built in `cli/main.py`):
 
 ```python
 {
-    # Core
-    "path": str,
-    "llm_provider": str,  # "openai", "gemini", "anthropic", "azure", "ollama"
-
-    # Model Selection (per-agent)
-    "model_analyzer": str,
-    "model_blueprint": str,
-    "model_generator": str,
-    "model_generator_iterative": str,
-    "model_reviewer": str,
-    "model_reflector": str,
-    "model_error_analyzer": str,
-    "model_iterative_improver": str,
-
-    # Validation
-    "skip_hadolint": bool,
-    "skip_security_scan": bool,
-    "strict_security": bool,
-    "max_image_size_mb": int,
-    "skip_health_check": bool,
-    "skip_security_review": bool,
-    "validation_memory": str,
-    "validation_cpus": str,
-    "validation_pids": int,
-
-    # File Reading
-    "max_file_chars": int,
-    "max_file_lines": int,
-    "truncation_enabled": bool,
-    "token_limit": int,               # Default: 50000
-
-    # RAG
-    "use_rag": bool,
-    "embedding_model": str,
-    "read_all_files": bool,
-
-    # Retry
-    "max_retries": int,
-
-    # Custom Instructions (per-agent)
+    # Per-Agent Custom Instructions (from .dockai/prompts/ or env vars)
     "analyzer_instructions": str,
+    "blueprint_instructions": str,
     "generator_instructions": str,
+    "generator_iterative_instructions": str,
     "reviewer_instructions": str,
     "reflector_instructions": str,
-    "blueprint_instructions": str,
+    "error_analyzer_instructions": str,
+    "iterative_improver_instructions": str,
 
-    # Custom Prompts (per-agent, from .dockai/prompts/)
-    "prompt_analyzer": str,
-    "prompt_generator": str,
-    "prompt_reviewer": str,
-    "prompt_reflector": str,
-    "prompt_blueprint": str,
-
-    # Observability
-    "enable_tracing": bool,
-    "tracing_exporter": str,
-    "langchain_tracing_v2": bool,
-
-    # Caching
-    "llm_caching": bool
+    # Build Options
+    "no_cache": bool,              # --no-cache flag
 }
+```
+
+**Settings read from environment variables** (not in config dict):
+
+```python
+# These are read directly by their respective modules:
+# LLM: llm_providers.py
+"DOCKAI_LLM_PROVIDER"             # "openai", "gemini", "anthropic", "azure", "ollama"
+"DOCKAI_MODEL_ANALYZER"           # Per-agent model override
+"DOCKAI_MODEL_GENERATOR"          # Per-agent model override
+# ... (see Configuration Guide for full list)
+
+# Validation: validator.py / nodes.py
+"DOCKAI_SKIP_HADOLINT"            # Skip Hadolint linting
+"DOCKAI_SKIP_SECURITY_SCAN"       # Skip Trivy scanning
+"DOCKAI_SKIP_HEALTH_CHECK"        # Skip health check validation
+"DOCKAI_MAX_IMAGE_SIZE_MB"        # Max allowed image size
+
+# File Reading: file_utils.py / nodes.py
+"DOCKAI_TOKEN_LIMIT"              # Default: 50000
+"DOCKAI_READ_ALL_FILES"           # Read all source files
+
+# RAG: indexer.py
+"DOCKAI_EMBEDDING_MODEL"          # Default: all-MiniLM-L6-v2
+
+# Retry: cli/main.py
+"MAX_RETRIES"                     # Default: 3
+
+# Caching: llm_providers.py
+"DOCKAI_LLM_CACHING"             # Enable LLM response caching
 ```
 
 ---

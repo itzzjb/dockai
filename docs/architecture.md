@@ -200,7 +200,7 @@ graph TD
 - **Purpose**: Failure analysis and adaptive learning
 - **Input**: Error details + history
 - **Output**: Reflection (what went wrong, what to try next)
-- **AI Model**: Strong reasoning model (gemini-1.5-pro, o1-mini)
+- **AI Model**: Strong reasoning model (gemini-1.5-pro, gpt-4o)
 - **Decisions**:
   - **Retry**: Fix Dockerfile and try again
   - **Revert**: Revert to last functional Dockerfile (if available) when max retries reached
@@ -350,10 +350,8 @@ def search(query: str, top_k: int = 10):
 
 In addition to semantic search, DockAI extracts structural information via AST parsing:
 
-**Supported Languages**:
-- Python (`ast` module)
-- JavaScript/TypeScript (`esprima` + regex)
-- Go (`regex-based detection`)
+**Supported Languages** (15 total, all regex-based pattern matching from `language_configs.py`):
+- Python, JavaScript, TypeScript, Go, Rust, Ruby, PHP, Java, C#, Kotlin, Scala, Elixir, Haskell, Dart, Swift
 
 **Extracted Information**:
 - **Entry Points**: `if __name__ == "__main__"`, `app.listen()`, `func main()`
@@ -557,11 +555,11 @@ DockAI supports multiple LLM providers through a unified interface in `src/docka
 
 | Provider | Models | API Key Env | Notes |
 |----------|--------|-------------|-------|
-| **OpenAI** | gpt-4o, gpt-4o-mini, o1-mini | `OPENAI_API_KEY` | Default provider |
+| **OpenAI** | gpt-4o, gpt-4o-mini | `OPENAI_API_KEY` | Default provider |
 | **Google Gemini** | gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash-exp | `GOOGLE_API_KEY` | Best cost/performance |
 | **Anthropic** | claude-sonnet-4-20250514, claude-3-5-haiku-latest | `ANTHROPIC_API_KEY` | Strong reasoning |
 | **Azure OpenAI** | (deployment-based) | `AZURE_OPENAI_API_KEY` | Enterprise |
-| **Ollama** | llama3.1, qwen, etc. | (local) | Free, local |
+| **Ollama** | llama3, qwen, etc. | (local) | Free, local |
 
 ### Provider Selection
 
@@ -580,7 +578,7 @@ export DOCKAI_MODEL_REFLECTOR="gemini-2.0-flash-exp"
 DockAI includes robust LLM error handling:
 
 1. **Model Not Found**: Auto-fallback to provider default
-2. **Rate Limiting**: Exponential backoff (not implemented, fails fast)
+2. **Rate Limiting**: Exponential backoff with jitter (via `rate_limiter.py`)
 3. **Authentication Errors**: Clear error message with setup guide
 4. **API Errors**: Retry with detailed logs
 

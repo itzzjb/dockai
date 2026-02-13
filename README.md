@@ -170,8 +170,8 @@ Use DockAI as an MCP server with AI assistants like Claude Desktop:
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"]
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"]
     }
   }
 }

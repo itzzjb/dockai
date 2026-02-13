@@ -144,13 +144,13 @@ export DOCKAI_MODEL_GENERATOR="gpt-4o"
 ollama serve
 
 # Pull a model
-ollama pull llama3.1
+ollama pull llama3
 
 # Configure DockAI
 export DOCKAI_LLM_PROVIDER="ollama"
 export OLLAMA_BASE_URL="http://localhost:11434"
-export DOCKAI_MODEL_ANALYZER="llama3.1"
-export DOCKAI_MODEL_GENERATOR="llama3.1"
+export DOCKAI_MODEL_ANALYZER="llama3"
+export DOCKAI_MODEL_GENERATOR="llama3"
 ```
 
 ### Step 2: Optional Configuration

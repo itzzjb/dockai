@@ -34,7 +34,7 @@ export OPENAI_API_KEY="sk-proj-..."
 | Analyzer | `gpt-4o-mini` | $0.15 input / $0.60 output | Fast, cheap |
 | Blueprint | `gpt-4o` | $5.00 input / $15.00 output | Best reasoning |
 | Generator | `gpt-4o` | $5.00 input / $15.00 output | High quality |
-| Reflector | `o1-mini` | $3.00 input / $12.00 output | Best for reflection |
+| Reflector | `gpt-4o` | $5.00 input / $15.00 output | Best for reflection |
 
 ### Configuration
 
@@ -232,8 +232,8 @@ ollama serve
 3. **Pull a model:**
 
 ```bash
-# Recommended: Llama 3.1
-ollama pull llama3.1
+# Recommended: Llama 3
+ollama pull llama3
 
 # Or other models
 ollama pull qwen2.5
@@ -245,18 +245,18 @@ ollama pull codellama
 ```bash
 export DOCKAI_LLM_PROVIDER="ollama"
 export OLLAMA_BASE_URL="http://localhost:11434"
-export DOCKAI_MODEL_ANALYZER="llama3.1"
-export DOCKAI_MODEL_GENERATOR="llama3.1"
+export DOCKAI_MODEL_ANALYZER="llama3"
+export DOCKAI_MODEL_GENERATOR="llama3"
 ```
 
 ### Recommended Models
 
 | Model | Size | Quality | Speed | Notes |
 |-------|------|---------|-------|-------|
-| `llama3.1` | 8B | Good | Fast | Best all-around |
+| `llama3` | 8B | Good | Fast | Best all-around |
 | `qwen2.5` | 7B | Excellent | Fast | Great for code |
 | `codellama` | 13B | Good | Medium | Specialized for code |
-| `llama3.1:70b` | 70B | Excellent | Slow | Requires powerful GPU |
+| `llama3:70b` | 70B | Excellent | Slow | Requires powerful GPU |
 
 ### Configuration
 
@@ -265,9 +265,9 @@ export DOCKAI_LLM_PROVIDER="ollama"
 export OLLAMA_BASE_URL="http://localhost:11434"
 
 # Use same model for all agents (simplest)
-export DOCKAI_MODEL_ANALYZER="llama3.1"
-export DOCKAI_MODEL_GENERATOR="llama3.1"
-export DOCKAI_MODEL_REFLECTOR="llama3.1"
+export DOCKAI_MODEL_ANALYZER="llama3"
+export DOCKAI_MODEL_GENERATOR="llama3"
+export DOCKAI_MODEL_REFLECTOR="llama3"
 ```
 
 ### Performance Tips

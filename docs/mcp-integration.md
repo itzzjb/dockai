@@ -68,50 +68,16 @@ Claude: I'll use DockAI to analyze your project and generate a Dockerfile...
 - **MCP-compatible client** (Claude Desktop, VSCode with MCP, etc.)
 - **LLM API Key** (OpenAI, Google, Anthropic, etc.)
 
-### Recommended
-
-- **uvx** for easier installation:
-  ```bash
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-  ```
-
 ## Installation
 
-DockAI can be used as an MCP server in two ways:
-
-### Option 1: Using uvx (Recommended)
-
-**Advantages:**
-- No manual installation needed
-- Automatic dependency management
-- Works immediately
-
-**Configuration** (added to MCP client config):
-```json
-{
-  "mcpServers": {
-    "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"]
-    }
-  }
-}
-```
-
-### Option 2: Using Installed Package
-
-**Advantages:**
-- Faster startup (no download on first run)
-- Use specific version
-
-**Installation:**
+**Install DockAI:**
 ```bash
 pip install dockai-cli
 # or
 uv pip install dockai-cli
 ```
 
-**Configuration** (added to MCP client config):
+**MCP Configuration** (added to your MCP client config):
 ```json
 {
   "mcpServers": {
@@ -122,6 +88,8 @@ uv pip install dockai-cli
   }
 }
 ```
+
+> **Note:** The MCP server is started via `python -m dockai.core.mcp_server`, not the CLI entry point.
 
 ## Configuration
 
@@ -146,8 +114,8 @@ uv pip install dockai-cli
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "OPENAI_API_KEY": "sk-your-api-key-here",
         "DOCKAI_LLM_PROVIDER": "openai"
@@ -167,8 +135,8 @@ You can configure DockAI through environment variables in the MCP config:
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "OPENAI_API_KEY": "sk-...",
         "DOCKAI_LLM_PROVIDER": "openai",
@@ -192,8 +160,8 @@ You can configure DockAI through environment variables in the MCP config:
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "GOOGLE_API_KEY": "AIza...",
         "DOCKAI_LLM_PROVIDER": "gemini",
@@ -210,8 +178,8 @@ You can configure DockAI through environment variables in the MCP config:
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "ANTHROPIC_API_KEY": "sk-ant-...",
         "DOCKAI_LLM_PROVIDER": "anthropic"
@@ -226,13 +194,13 @@ You can configure DockAI through environment variables in the MCP config:
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "DOCKAI_LLM_PROVIDER": "ollama",
         "OLLAMA_BASE_URL": "http://localhost:11434",
-        "DOCKAI_MODEL_ANALYZER": "llama3.1",
-        "DOCKAI_MODEL_GENERATOR": "llama3.1"
+        "DOCKAI_MODEL_ANALYZER": "llama3",
+        "DOCKAI_MODEL_GENERATOR": "llama3"
       }
     }
   }
@@ -311,8 +279,8 @@ Claude: I'll update the Dockerfile to use Node.js 20...
 {
   "mcpServers": {
     "dockai": {
-      "command": "uvx",
-      "args": ["dockai-cli"],
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"],
       "env": {
         "OPENAI_API_KEY": "${env:OPENAI_API_KEY}"
       }
@@ -337,8 +305,8 @@ import mcp
 # Connect to DockAI MCP server
 client = mcp.Client()
 await client.connect("dockai", {
-    "command": "uvx",
-    "args": ["dockai-cli"]
+    "command": "python",
+    "args": ["-m", "dockai.core.mcp_server"]
 })
 
 # List available tools
@@ -559,11 +527,11 @@ Error: Could not connect to MCP server 'dockai'
 
 **Solutions:**
 
-1. **Verify uvx/dockai is installed:**
+1. **Verify dockai is installed:**
    ```bash
-   uvx dockai-cli --version
-   # or
    dockai --version
+   # or
+   python -m dockai.core.mcp_server  # Should start MCP server
    ```
 
 2. **Check MCP configuration syntax:**
@@ -611,7 +579,7 @@ DockAI failed to generate Dockerfile
 1. **Enable verbose mode in MCP config:**
    ```json
    "env": {
-     "DOCKAI_VERBOSE": "true"
+     "DOCKAI_LLM_PROVIDER": "openai"
    }
    ```
 
@@ -632,13 +600,9 @@ DockAI takes too long through MCP
 
 **Solutions:**
 
-1. **Use pre-installed package instead of uvx:**
+1. **Ensure dockai is installed locally:**
    ```bash
    pip install dockai-cli
-   ```
-   Then update MCP config:
-   ```json
-   "command": "dockai"
    ```
 
 2. **Disable validation for faster iteration:**
@@ -737,7 +701,7 @@ When troubleshooting:
 ```json
 {
   "env": {
-    "DOCKAI_VERBOSE": "true"
+    "DOCKAI_LLM_PROVIDER": "openai"
   }
 }
 ```

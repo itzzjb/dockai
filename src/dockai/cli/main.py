@@ -77,7 +77,7 @@ def load_instructions(path: str):
 def build(
     path: str = typer.Argument(..., help="Path to the repository to analyze"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose debug logging"),
-    no_cache: bool = typer.Option(False, "--no-cache", help="Disable Docker build cache (currently not implemented)")
+    no_cache: bool = typer.Option(False, "--no-cache", help="Disable Docker build cache")
 ):
     """
     Build a Dockerfile for a project using AI analysis.
@@ -96,8 +96,7 @@ def build(
     if os.getenv("LANGCHAIN_TRACING_V2", "false").lower() == "true":
         logger.info("LangSmith tracing enabled")
     
-    # Note: no_cache flag is accepted for compatibility but not yet implemented
-    # Docker build caching behavior is handled at the Docker daemon level
+    # Note: no_cache flag is passed through config to validator.py which adds --no-cache to docker build
     
     # Validate input path existence
     if not os.path.exists(path):

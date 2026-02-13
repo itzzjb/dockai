@@ -57,7 +57,7 @@ export DOCKAI_LLM_PROVIDER="gemini"
 **Default Models:**
 - Analyzer: `gpt-4o-mini`
 - Generator: `gpt-4o`
-- Reflector: `o1-mini`
+- Reflector: `gpt-4o`
 
 ```bash
 export OPENAI_API_KEY="sk-proj-..."
@@ -123,7 +123,7 @@ export DOCKAI_MODEL_GENERATOR="gpt-4o-deployment"
 
 **Required:**
 - Ollama installed and running ([ollama.com](https://ollama.com/))
-- At least one model pulled (e.g., `ollama pull llama3.1`)
+- At least one model pulled (e.g., `ollama pull llama3`)
 
 **Optional:**
 - `OLLAMA_BASE_URL`: Custom URL (default: `http://localhost:11434`)
@@ -133,13 +133,13 @@ export DOCKAI_MODEL_GENERATOR="gpt-4o-deployment"
 ollama serve
 
 # Pull a model
-ollama pull llama3.1
+ollama pull llama3
 
 # Configure DockAI
 export DOCKAI_LLM_PROVIDER="ollama"
 export OLLAMA_BASE_URL="http://localhost:11434"
-export DOCKAI_MODEL_ANALYZER="llama3.1"
-export DOCKAI_MODEL_GENERATOR="llama3.1"
+export DOCKAI_MODEL_ANALYZER="llama3"
+export DOCKAI_MODEL_GENERATOR="llama3"
 ```
 
 ## Model Selection
@@ -155,7 +155,7 @@ DockAI allows per-agent model configuration for cost optimization.
 | **Generator** | `DOCKAI_MODEL_GENERATOR` | `gpt-4o` | `gemini-1.5-pro` |
 | **Generator Iterative** | `DOCKAI_MODEL_GENERATOR_ITERATIVE` | `gpt-4o` | `gemini-1.5-pro` |
 | **Reviewer** | `DOCKAI_MODEL_REVIEWER` | `gpt-4o-mini` | `gemini-1.5-flash` |
-| **Reflector** | `DOCKAI_MODEL_REFLECTOR` | `o1-mini` | `gemini-1.5-pro` |
+| **Reflector** | `DOCKAI_MODEL_REFLECTOR` | `gpt-4o` | `gemini-1.5-pro` |
 | **Error Analyzer** | `DOCKAI_MODEL_ERROR_ANALYZER` | `gpt-4o-mini` | `gemini-1.5-flash` |
 | **Iterative Improver** | `DOCKAI_MODEL_ITERATIVE_IMPROVER` | `gpt-4o` | `gemini-1.5-pro` |
 
@@ -166,7 +166,7 @@ DockAI allows per-agent model configuration for cost optimization.
 export DOCKAI_MODEL_ANALYZER="gpt-4o-mini"         # $0.15 / 1M tokens
 export DOCKAI_MODEL_BLUEPRINT="gpt-4o"             # $5.00 / 1M tokens
 export DOCKAI_MODEL_GENERATOR="gpt-4o"             # $5.00 / 1M tokens
-export DOCKAI_MODEL_REFLECTOR="o1-mini"            # Best reasoning
+export DOCKAI_MODEL_REFLECTOR="gpt-4o"             # Best reasoning
 ```
 
 ### Example: All Gemini
@@ -262,11 +262,12 @@ export DOCKAI_SKIP_SECURITY_REVIEW="false"
 
 ### Enable/Disable RAG
 
-```bash
-# Enable RAG (default in v4.0)
-export DOCKAI_USE_RAG="true"
+RAG is **always enabled** in the CLI. The `DOCKAI_USE_RAG` environment variable is only used in the **GitHub Action**.
 
-# Disable RAG (not recommended, falls back to simple file reading)
+When using the CLI, RAG is the default and only strategy — if RAG indexing fails, it automatically falls back to a simple "read all text files until token limit" strategy.
+
+```bash
+# GitHub Action only: disable RAG
 export DOCKAI_USE_RAG="false"
 ```
 
@@ -487,20 +488,16 @@ dockai build .
 
 # Specify custom path
 dockai build /path/to/project
-
-# Use environment variable
-export PROJECT_PATH="/path/to/project"
-dockai build
 ```
 
 ### No-Cache Flag
 
 ```bash
-# Disable Docker build cache (currently not implemented)
+# Disable Docker build cache
 dockai build . --no-cache
 ```
 
-**Note:** This flag is accepted but not yet functional in v4.0.
+**Note:** When `--no-cache` is used, Docker skips the build cache, ensuring a clean build. On retries, `--no-cache` is automatically enabled.
 
 ## Complete Configuration Example
 
