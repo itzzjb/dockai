@@ -544,6 +544,7 @@ on:
   uses: itzzjb/dockai@v4
   with:
     openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+```
 
 ### "Permission denied" when pushing
 

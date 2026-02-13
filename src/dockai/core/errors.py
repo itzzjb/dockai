@@ -223,6 +223,19 @@ the operation was SUCCESSFUL. Only look for ACTUAL errors.
   This is ALWAYS a DOCKERFILE_ERROR - the file exists, it just wasn't copied.
   dockerfile_fix must include adding the proper COPY instruction.
 
+**Missing module/package at runtime in multi-stage builds**:
+  If the error says a module/package is not found (e.g., "ModuleNotFoundError: No module named 'flask'",
+  "Cannot find module 'express'", "Error: Cannot find module") but the dependency IS declared in the
+  project's dependency file (requirements.txt, package.json, Gemfile, etc.):
+  - This is ALWAYS a DOCKERFILE_ERROR, NOT a PROJECT_ERROR.
+  - The packages were installed in the builder stage (e.g., into /usr/local/lib/python3.x/site-packages)
+    but only /app was copied to the runtime stage, so installed packages are missing.
+  - dockerfile_fix: "Copy installed packages from builder to runtime stage (e.g., COPY --from=builder
+    /usr/local/lib/python3.x/site-packages /usr/local/lib/python3.x/site-packages and
+    COPY --from=builder /usr/local/bin /usr/local/bin), or install dependencies directly in runtime stage,
+    or use a virtualenv in the builder and copy it to runtime."
+  - NEVER tell the user to add a dependency that is already in their dependency file.
+
 **Binary not found / executable missing**:
   Usually a binary compatibility issue between build and runtime stages.
   Consider static linking or compatible base images.

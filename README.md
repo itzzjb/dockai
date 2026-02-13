@@ -21,11 +21,11 @@ DockAI v4.0 features a sophisticated multi-agent system orchestrated by LangGrap
 - **Analyzer Agent**: Project discovery and technology stack detection
 - **Blueprint Agent**: Architectural planning and runtime configuration
 - **Generator Agent**: Dockerfile creation with best practices
-- **Iterative Generator Agent**: Refining existing Dockerfiles based on feedback
+- **Generator Iterative Agent**: Refining existing Dockerfiles based on feedback
 - **Reviewer Agent**: Security auditing and vulnerability detection
 - **Reflector Agent**: Failure analysis and adaptive learning
 - **Error Analyzer Agent**: Classification of build/runtime errors for better recovery
-- **Iterative Improver Agent**: Surgical fixes based on validation feedback
+- **Iterative Improver Agent**: Targeted fixes based on validation feedback
 
 ### 🔄 **Adaptive & Self-Improving**
 - **Automatic Validation**: Builds and tests the Docker image locally
@@ -35,7 +35,7 @@ DockAI v4.0 features a sophisticated multi-agent system orchestrated by LangGrap
 - **Reanalysis**: Detects when fundamental assumptions are wrong and pivots
 
 ### 🔒 **Security & Best Practices**
-- **Hadolint Integration**: Strict Dockerfile linting (warnings are treated as errors and auto-fixed)
+- **Hadolint Integration**: Strict Dockerfile linting (issues are detected and auto-fixed)
 - **Trivy Security Scanning**: Container vulnerability detection
 - **AI Security Review**: Identifies security anti-patterns (root users, exposed secrets, etc.)
 - **Multi-Stage Builds**: Optimizes for smaller, more secure images
@@ -61,36 +61,35 @@ DockAI v4.0 is built on a modern, agent-based architecture using LangGraph for w
 graph TD
     Start([Start]) --> Scan[Scan Repo]
     Scan --> Analyze[Agent : Analyzer]
-    Analyze --> ReadFiles[Read Context]
+    Analyze --> ReadFiles[Read Context via RAG]
     ReadFiles --> Blueprint[Agent : Blueprint]
     Blueprint --> Generate[Agent : Generator]
     Generate --> Review[Agent : Reviewer]
     
-    Review -->|Secure| Validate[Agent : Validator]
-    Review -->|Insecure| CheckRetry{Retry < Max?}
+    Review -->|Secure| Validate[Validation Pipeline]
+    Review -->|Insecure| Reflect
     
     Validate -->|Success| End([Success])
-    Validate -->|Fail| CheckRetry
-    
-    CheckRetry -->|Yes| Reflect[Agent : Reflector]
-    CheckRetry -->|No| EndFail([Fail])
+    Validate -->|Fail| Reflect[Agent : Reflector]
     
     Reflect --> IncRetry[Increment Retry]
     IncRetry --> Route{Route Fix}
     
     Route -->|Re-Analyze| Analyze
     Route -->|Re-Plan| Blueprint
-    Route -->|Fix Code| Improver[Agent : Iterative Improver]
-    Improver --> Review
+    Route -->|Fix Code| Generate
+    
+    Reflect -->|Max Retries| EndFail([Fail / Revert to Best])
 ```
 
 ### Core Components
 
 - **LangGraph Workflow Engine**: Orchestrates the agent flow with conditional routing
-- **RAG Context Engine**: In-memory vector store for semantic code search
-- **Multi-Agent System**: 8 specialized AI agents for different tasks
-- **Validation Pipeline**: Docker build, Hadolint, Trivy, and health checks
-- **State Management**: Centralized state for workflow coordination
+- **RAG Context Engine**: In-memory vector store for semantic code search using sentence-transformers
+- **Multi-Agent System**: 8 specialized AI agents for different tasks (Analyzer, Blueprint, Generator, Generator Iterative, Reviewer, Reflector, Error Analyzer, Iterative Improver)
+- **Validation Pipeline**: Docker build, Hadolint linting, Trivy security scanning, and health checks
+- **State Management**: Centralized `DockAIState` TypedDict for workflow coordination
+- **Fallback Strategy**: Reverts to the last working Dockerfile if max retries are reached
 
 For detailed architecture documentation, see [`docs/architecture.md`](docs/architecture.md).
 

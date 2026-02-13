@@ -160,13 +160,19 @@ def create_graph():
     
     The workflow structure:
     
-    scan → analyze → read_files → detect_health → detect_readiness → plan → generate → review
-                                                                                           ↓
-                                                                                       validate
-                                                                                           ↓
-                                                                            (if failed) reflect → (check_reanalysis)
-                                                                                                        ↓
-                                                                            ← ← ← ← ← ← ← ← ← ← ← analyze/plan/generate
+    scan → analyze → read_files → blueprint → generate → review
+                                                            ↓
+                                                     (check_security)
+                                                       ↓        ↓
+                                                   validate   END (critical issue)
+                                                       ↓
+                                                  (should_retry)
+                                                  ↓      ↓      ↓
+                                              reflect   END   increment_retry → END
+                                                  ↓
+                                           (check_reanalysis)
+                                              ↓          ↓
+                                          analyze    blueprint/generate
     
     Returns:
         CompiledGraph: The executable LangGraph workflow.

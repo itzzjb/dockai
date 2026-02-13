@@ -18,10 +18,10 @@ logger = logging.getLogger("dockai")
 
 import re
 from functools import lru_cache
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
-def _strip_tag(image_name: str) -> tuple[str, Optional[str]]:
+def _strip_tag(image_name: str) -> Tuple[str, Optional[str]]:
     """Split image into (repo, tag) without breaking registry hosts.
 
     We only treat a ':' as a tag separator if it appears *after* the last '/'.

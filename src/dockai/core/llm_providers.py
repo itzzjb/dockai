@@ -90,7 +90,7 @@ class LLMConfig:
     Configuration for LLM provider and per-agent model settings.
     
     Attributes:
-        provider: The LLM provider to use (openai, azure, gemini)
+        default_provider: The LLM provider to use (openai, azure, gemini, anthropic, ollama)
         models: Dictionary mapping agent names to model names
         temperature: Default temperature for LLM calls
         
@@ -185,7 +185,7 @@ def load_llm_config_from_env() -> LLMConfig:
     Loads LLM configuration from environment variables.
     
     Environment Variables:
-        DOCKAI_LLM_PROVIDER: Provider name (openai, azure, gemini)
+        DOCKAI_LLM_PROVIDER: Provider name (openai, azure, gemini, anthropic, ollama)
         DOCKAI_MODEL_<AGENT>: Model for specific agent
         
         Azure-specific:

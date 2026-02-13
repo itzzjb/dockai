@@ -12,7 +12,7 @@ Architecture:
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Pattern, Callable, Optional
+from typing import List, Dict, Callable, Optional
 import re
 
 

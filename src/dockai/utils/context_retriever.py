@@ -220,10 +220,10 @@ class ContextRetriever:
                     ))
                     seen_files.add(chunk.file_path)
         
-        # 6. SORT by relevance and MERGE
+        # 7. SORT by relevance and MERGE
         context_parts.sort(key=lambda x: x.relevance_score, reverse=True)
         
-        # 7. BUILD final context string with token limit
+        # 8. BUILD final context string with token limit
         max_chars = max_tokens * 4  # Approximate chars per token
         final_context = self._build_final_context(context_parts, max_chars)
         

@@ -61,7 +61,8 @@ def load_instructions(path: str):
         path (str): The absolute path to the target directory where `.dockai` might exist.
 
     Returns:
-        Tuple[str, str]: A tuple containing (analyzer_instructions, generator_instructions) for backward compatibility.
+        PromptConfig: The merged prompt configuration loaded from environment variables
+            and the .dockai file.
     """
     # Load and set custom prompts and instructions configuration
     # This handles all 8 prompts and their instructions from env vars and .dockai file
@@ -112,7 +113,6 @@ def build(
     set_llm_config(llm_config)
     
     # Validate API key configuration based on provider
-    # Validate API key configuration based on default provider
     if llm_config.default_provider == LLMProvider.OPENAI:
         if not os.getenv("OPENAI_API_KEY"):
             ui.print_error("Configuration Error", "OPENAI_API_KEY not found in environment variables.", 
@@ -155,7 +155,6 @@ def build(
         logger.warning(f"Dockerfile already exists at {output_path}. It will be overwritten.")
 
 
-    # Load custom instructions
     # Load custom instructions
     prompt_config = load_instructions(path)
     

@@ -313,6 +313,8 @@ def validate_docker_build_and_run(
         readiness_patterns (List[str]): AI-detected log patterns for startup detection.
         failure_patterns (List[str]): AI-detected log patterns for failure detection.
         no_cache (bool): If True, disables Docker build cache.
+        analysis_result (dict): The original project analysis context, used for
+            health endpoint auto-detection. Defaults to None.
         
     Returns:
         Tuple[bool, str, int, Optional[ClassifiedError]]: A tuple containing 

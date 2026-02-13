@@ -58,19 +58,6 @@ class FileChunk:
     metadata: Dict = field(default_factory=dict)
 
 
-@dataclass
-class FileChunk:
-    """
-    Represents a chunk of a file for embedding and retrieval.
-    """
-    file_path: str
-    content: str
-    start_line: int
-    end_line: int
-    chunk_type: str = "chunk"
-    metadata: Dict = field(default_factory=dict)
-
-
 class ProjectIndex:
     """
     Persistent semantic index using in-memory embeddings.

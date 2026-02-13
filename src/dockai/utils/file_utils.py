@@ -1,7 +1,15 @@
+"""
+DockAI File Utilities Module.
+
+This module provides utilities for reading and processing project files
+for LLM consumption. It includes intelligent truncation, token estimation,
+and code minification to optimize context sent to language models.
+"""
 
 import os
 import logging
 import re
+from typing import List, Optional
 
 logger = logging.getLogger("dockai")
 
@@ -83,7 +91,7 @@ def smart_truncate(content: str, filename: str, max_chars: int, max_lines: int) 
         
     return content
 
-def read_critical_files(path: str, files_to_read: list[str], truncation_enabled: bool = None) -> str:
+def read_critical_files(path: str, files_to_read: List[str], truncation_enabled: bool = None) -> str:
     """
     Reads critical files from the repository with optional smart truncation.
     
@@ -106,11 +114,11 @@ def read_critical_files(path: str, files_to_read: list[str], truncation_enabled:
         env_truncation = os.getenv("DOCKAI_TRUNCATION_ENABLED", "false").lower()
         truncation_enabled = env_truncation in ("true", "1", "yes", "on")
     
-    # Get token limit for auto-truncation (default: 100K tokens ≈ 400K chars)
+    # Get token limit for auto-truncation (default: 50K tokens ≈ 200K chars)
     try:
-        TOKEN_LIMIT = int(os.getenv("DOCKAI_TOKEN_LIMIT", "100000"))
+        TOKEN_LIMIT = int(os.getenv("DOCKAI_TOKEN_LIMIT", "50000"))
     except ValueError:
-        TOKEN_LIMIT = 100000
+        TOKEN_LIMIT = 50000
     
     file_contents_str = ""
     files_read = 0

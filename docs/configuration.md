@@ -87,9 +87,9 @@ export DOCKAI_LLM_PROVIDER="gemini"
 - `ANTHROPIC_API_KEY`: API key from [console.anthropic.com](https://console.anthropic.com/settings/keys)
 
 **Default Models:**
-- Analyzer: `claude-3-haiku-20240307`
-- Generator: `claude-3.5-sonnet-20241022`
-- Reflector: `claude-3.5-sonnet-20241022`
+- Analyzer: `claude-3-5-haiku-latest`
+- Generator: `claude-sonnet-4-20250514`
+- Reflector: `claude-sonnet-4-20250514`
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
@@ -308,7 +308,7 @@ export DOCKAI_MAX_FILE_LINES="5000"
 export DOCKAI_TRUNCATION_ENABLED="true"
 
 # Token threshold for auto-truncation
-export DOCKAI_TOKEN_LIMIT="100000"
+export DOCKAI_TOKEN_LIMIT="50000"
 ```
 
 **Smart Truncation:**
@@ -576,7 +576,7 @@ DOCKAI_LLM_CACHING=true
 | `DOCKAI_MAX_FILE_CHARS` | int | `200000` | Max chars per file |
 | `DOCKAI_MAX_FILE_LINES` | int | `5000` | Max lines per file |
 | `DOCKAI_TRUNCATION_ENABLED` | bool | `false` | Force truncation |
-| `DOCKAI_TOKEN_LIMIT` | int | `100000` | Auto-truncation threshold |
+| `DOCKAI_TOKEN_LIMIT` | int | `50000` | Auto-truncation threshold |
 | `DOCKAI_USE_RAG` | bool | `true` | Enable RAG |
 | `DOCKAI_EMBEDDING_MODEL` | string | `all-MiniLM-L6-v2` | Embedding model |
 | `DOCKAI_READ_ALL_FILES` | bool | `true` | Read all files |

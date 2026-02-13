@@ -121,12 +121,8 @@ def validate_dockerfile(path: str, dockerfile_content: str) -> str:
         f.write(dockerfile_content)
         
     try:
-        # We need to trick the validator to use this specific file or rename it
-        # For safety, let's just use the standard validator which expects 'Dockerfile'
-        # But we don't want to overwrite existing Dockerfile if possible.
-        # The validator function takes a path and expects Dockerfile in it.
-        
-        # Let's backup existing Dockerfile if it exists
+        # The validator expects a Dockerfile at the project root.
+        # Back up any existing Dockerfile before writing the test content.
         real_dockerfile_path = os.path.join(path, "Dockerfile")
         backup_path = None
         if os.path.exists(real_dockerfile_path):
@@ -137,24 +133,21 @@ def validate_dockerfile(path: str, dockerfile_content: str) -> str:
             f.write(dockerfile_content)
             
         success, message, _, _ = validate_docker_build_and_run(
-            path=path,
-            project_type="service", # Defaulting to service for validation
+            directory=path,
+            project_type="service",
             stack="unknown",
             health_endpoint=None,
-            wait_time=5
+            recommended_wait_time=5
         )
         
         return f"Validation {'Success' if success else 'Failed'}: {message}"
         
     finally:
-        # Restore backup
+        # Restore the original Dockerfile if one was backed up
         if backup_path and os.path.exists(backup_path):
             os.rename(backup_path, real_dockerfile_path)
         elif os.path.exists(real_dockerfile_path):
-            # If we created it and there was no backup, remove it? 
-            # Or leave it? Let's leave it but maybe we should have been cleaner.
-            # For MCP tool, maybe we shouldn't be writing to disk at all if we can avoid it,
-            # but docker build needs a context.
+            # NOTE: Leaves Dockerfile on disk since Docker build requires a file context
             pass
 
 @mcp.tool()

@@ -78,15 +78,9 @@ def reflect_on_failure(context: 'AgentContext') -> Tuple[ReflectionResult, Dict[
     and *how* to fix it.
 
     Args:
-        dockerfile_content (str): The content of the Dockerfile that caused the failure.
-        error_message (str): The primary error message returned by the Docker daemon or CLI.
-        error_details (Dict[str, Any]): Additional structured details about the error
-            (e.g., error code, stage where it failed).
-        analysis_result (Dict[str, Any]): The original project analysis context.
-        retry_history (List[Dict[str, Any]], optional): History of previous attempts to
-            avoid cyclic failures. Defaults to None.
-        container_logs (str, optional): Runtime logs from the container if the failure
-            occurred after the build phase. Defaults to "".
+        context (AgentContext): Unified context containing dockerfile content, error message,
+            error details, analysis result, retry history, container logs, and custom
+            instructions.
 
     Returns:
         Tuple[ReflectionResult, Dict[str, int]]: A tuple containing:
@@ -341,15 +335,9 @@ def generate_iterative_dockerfile(context: 'AgentContext') -> Tuple[IterativeDoc
     a new version that addresses the specific issues while preserving what worked.
 
     Args:
-        previous_dockerfile (str): The content of the failed Dockerfile.
-        reflection (Dict[str, Any]): The structured reflection result containing
-            root cause analysis and specific fix instructions.
-        analysis_result (Dict[str, Any]): The original project analysis context.
-        file_contents (str): Content of critical files to provide context.
-        current_plan (Dict[str, Any]): The current build strategy/plan.
-        verified_tags (str, optional): A list of verified Docker image tags to ensure
-            valid base images are used. Defaults to "".
-        custom_instructions (str, optional): User-provided instructions. Defaults to "".
+        context (AgentContext): Unified context containing the previous Dockerfile,
+            reflection data, analysis result, file contents, current plan, verified
+            tags, and custom instructions.
 
     Returns:
         Tuple[IterativeDockerfileResult, Dict[str, int]]: A tuple containing:

@@ -132,10 +132,10 @@ export DOCKAI_LLM_PROVIDER="anthropic"
 
 | Agent | Model | Cost (per 1M tokens) | Notes |
 |-------|-------|---------------------|-------|
-| Analyzer | `claude-3-haiku-20240307` | $0.25 input / $1.25 output | Fast, cheap |
-| Blueprint | `claude-3.5-sonnet-20241022` | $3.00 input / $15.00 output | Best reasoning |
-| Generator | `claude-3.5-sonnet-20241022` | $3.00 input / $15.00 output | Excellent quality |
-| Reflector | `claude-3.5-sonnet-20241022` | $3.00 input / $15.00 output | Strong reflection |
+| Analyzer | `claude-3-5-haiku-latest` | Check pricing | Fast, cheap |
+| Blueprint | `claude-sonnet-4-20250514` | Check pricing | Best reasoning |
+| Generator | `claude-sonnet-4-20250514` | Check pricing | Excellent quality |
+| Reflector | `claude-sonnet-4-20250514` | Check pricing | Strong reflection |
 
 ### Configuration
 
@@ -144,14 +144,14 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 export DOCKAI_LLM_PROVIDER="anthropic"
 
 # Recommended models
-export DOCKAI_MODEL_ANALYZER="claude-3-haiku-20240307"
-export DOCKAI_MODEL_GENERATOR="claude-3.5-sonnet-20241022"
-export DOCKAI_MODEL_REFLECTOR="claude-3.5-sonnet-20241022"
+export DOCKAI_MODEL_ANALYZER="claude-3-5-haiku-latest"
+export DOCKAI_MODEL_GENERATOR="claude-sonnet-4-20250514"
+export DOCKAI_MODEL_REFLECTOR="claude-sonnet-4-20250514"
 ```
 
 ### Claude Features
 
-- **Large Context**: Claude supports up to 200k tokens (vs. GPT-4's 128k)
+- **Large Context**: Claude supports up to 200k tokens
 - **Safety**: Built-in safety features reduce harmful outputs
 - **Code Quality**: Excellent at understanding and generating code
 

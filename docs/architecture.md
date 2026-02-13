@@ -98,27 +98,25 @@ The DockAI workflow is implemented as a LangGraph `StateGraph` with conditional 
 graph TD
     Start([Start]) --> Scan[Scan Repo]
     Scan --> Analyze[Agent : Analyzer]
-    Analyze --> ReadFiles[Read Context]
+    Analyze --> ReadFiles[Read Context via RAG]
     ReadFiles --> Blueprint[Agent : Blueprint]
     Blueprint --> Generate[Agent : Generator]
     Generate --> Review[Agent : Reviewer]
     
-    Review -->|Secure| Validate[Agent : Validator]
-    Review -->|Insecure| CheckRetry{Retry < Max?}
+    Review -->|Secure| Validate[Validation Pipeline]
+    Review -->|Insecure| Reflect
     
     Validate -->|Success| End([Success])
-    Validate -->|Fail| CheckRetry
-    
-    CheckRetry -->|Yes| Reflect[Agent : Reflector]
-    CheckRetry -->|No| EndFail([Fail])
+    Validate -->|Fail| Reflect[Agent : Reflector]
     
     Reflect --> IncRetry[Increment Retry]
     IncRetry --> Route{Route Fix}
     
     Route -->|Re-Analyze| Analyze
     Route -->|Re-Plan| Blueprint
-    Route -->|Fix Code| Improver[Agent : Iterative Improver]
-    Improver --> Review
+    Route -->|Fix Code| Generate
+    
+    Reflect -->|Max Retries| EndFail([Fail / Revert to Best])
 ```
 
 
@@ -169,7 +167,7 @@ graph TD
 - **Purpose**: Generate actual Dockerfile code
 - **Input**: Blueprint + context
 - **Output**: Complete Dockerfile
-- **AI Model**: Best available model (gpt-4o, claude-3.5-sonnet)
+- **AI Model**: Best available model (gpt-4o, claude-sonnet-4)
 - **Features**:
   - First-time generation from blueprint
   - Iterative improvement based on feedback
@@ -380,10 +378,10 @@ The workload is distributed among **8 specialized AI agents**, each with a disti
 | **Analyzer** | Project Detective | Lightweight | Identifies tech stack, frameworks, packages, and project structure. |
 | **Blueprint** | Chief Architect | Strong Reasoning | Creates the strategic build plan (base images, multi-stage strategy) and runtime config. |
 | **Generator** | Code Author | Best Available | Translates the blueprint into syntactically correct Dockerfile code. |
-| **Iterative Generator** | Refinement Engineer | Strong Reasoning | Refines existing Dockerfiles based on user feedback or non-critical updates. |
-| **Reviewer** | Security Auditor | Medium | Performs static security analysis (secrets, root user, vulnerabilities). |
+| **Generator Iterative** | Refinement Engineer | Best Available | Refines existing Dockerfiles based on reflection and error feedback. |
+| **Reviewer** | Security Auditor | Lightweight | Performs static security analysis (secrets, root user, vulnerabilities). |
 | **Reflector** | Post-Mortem Analyst | Strong Reasoning | Analyzes build logs/errors to diagnose the *root cause* of failures. |
-| **Error Analyzer** | Troubleshooter | Medium | Classifies errors (Project vs Dockerfile vs Env) to determine recoverability. |
+| **Error Analyzer** | Troubleshooter | Lightweight | Classifies errors (Project vs Dockerfile vs Env) to determine recoverability. |
 | **Iterative Improver** | Surgical Fixer | Strong Reasoning | Applies precise, minimal patches to the Dockerfile to fix diagnosed issues. |
 
 ### Agent Function Modules
@@ -392,12 +390,11 @@ Each agent is backed by a dedicated function module in `src/dockai/agents/`:
 
 ```
 agents/
-├── analyzer.py          # analyze_project()
-├── generator.py         # create_dockerfile(), create_blueprint(), 
-│                        #  generate_iterative_dockerfile()
+├── analyzer.py          # analyze_repo_needs()
+├── generator.py         # generate_dockerfile()
 ├── reviewer.py          # review_dockerfile()
-└── agent_functions.py   # reflect_on_failure(), classify_build_error(),
-                         #  iterative_improve_dockerfile()
+└── agent_functions.py   # reflect_on_failure(), create_blueprint(),
+                         #  generate_iterative_dockerfile()
 ```
 
 ### Prompt Engineering
@@ -421,42 +418,53 @@ Each agent has a carefully crafted prompt in `src/dockai/utils/prompts.py`:
 The entire workflow state is managed by a single `DockAIState` TypedDict:
 
 ```python
-class DockAIState(TypedDict, total=False):
+class DockAIState(TypedDict):
     # Input
     path: str
-    config: dict
+    config: Dict[str, Any]
+    max_retries: int
     
     # Scanning
     file_tree: List[str]
     
     # Analysis
-    analysis_result: dict
+    analysis_result: Dict[str, Any]
     
     # Context
     file_contents: str
-    code_intelligence: Optional[dict]
     
     # Planning
-    current_plan: str
-    detected_health_endpoint: str
-    readiness_patterns: List[str]
+    current_plan: Optional[Dict[str, Any]]
     
     # Generation
     dockerfile_content: str
+    previous_dockerfile: Optional[str]
+    best_dockerfile: Optional[str]  # Last working Dockerfile for fallback
+    best_dockerfile_source: Optional[str]
     
     # Validation
-    validation_result: dict
+    validation_result: Dict[str, Any]
+    retry_count: int
     
     # Error Handling
-    error: str
-    error_details: str
-    reflection: str
-    retry_count: int
-    retry_history: List[dict]
+    error: Optional[str]
+    error_details: Optional[Dict[str, Any]]
+    logs: List[str]
+    
+    # Adaptive Intelligence
+    retry_history: List[RetryAttempt]
+    reflection: Optional[Dict[str, Any]]
+    
+    # Smart Detection
+    detected_health_endpoint: Optional[Dict[str, Any]]
+    readiness_patterns: List[str]
+    failure_patterns: List[str]
+    
+    # Control Flow
     needs_reanalysis: bool
     
     # Observability
-    usage_stats: dict
+    usage_stats: List[Dict[str, Any]]
 ```
 
 **State Flow**:
@@ -551,7 +559,7 @@ DockAI supports multiple LLM providers through a unified interface in `src/docka
 |----------|--------|-------------|-------|
 | **OpenAI** | gpt-4o, gpt-4o-mini, o1-mini | `OPENAI_API_KEY` | Default provider |
 | **Google Gemini** | gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash-exp | `GOOGLE_API_KEY` | Best cost/performance |
-| **Anthropic** | claude-3.5-sonnet, claude-3-opus | `ANTHROPIC_API_KEY` | Strong reasoning |
+| **Anthropic** | claude-sonnet-4-20250514, claude-3-5-haiku-latest | `ANTHROPIC_API_KEY` | Strong reasoning |
 | **Azure OpenAI** | (deployment-based) | `AZURE_OPENAI_API_KEY` | Enterprise |
 | **Ollama** | llama3.1, qwen, etc. | (local) | Free, local |
 

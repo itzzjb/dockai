@@ -134,13 +134,7 @@ export DOCKAI_SKIP_SECURITY_SCAN="true"
 
 ### Can I disable RAG?
 
-Yes, but not recommended:
-
-```bash
-export DOCKAI_USE_RAG="false"
-```
-
-This falls back to a simple "read all text files until token limit" strategy, which is less efficient and may miss important context.
+RAG is always enabled in the CLI. The `DOCKAI_USE_RAG` environment variable is only used in the GitHub Action. When using the CLI, RAG is the default and only strategy — if RAG indexing fails, it automatically falls back to a simple "read all text files until token limit" strategy.
 
 ### What embedding model does DockAI use?
 
@@ -192,8 +186,8 @@ Approximate costs (varies by project size):
 |----------|-------|----------|-----------|-------|
 | **OpenAI** | gpt-4o-mini + gpt-4o | $0.01 | $0.04 | **$0.05** |
 | **Google** | gemini-1.5-flash + pro | $0.002 | $0.015 | **$0.02** |
-| **Anthropic** | claude-3-haiku + 3.5-sonnet | $0.01 | $0.06 | **$0.07** |
-| **Ollama** | llama3.1 | $0 | $0 | **$0** |
+| **Anthropic** | claude-3-5-haiku + claude-sonnet-4 | $0.01 | $0.06 | **$0.07** |
+| **Ollama** | llama3 (default) | $0 | $0 | **$0** |
 
 **Token Usage (Typical):**
 - Analyzer: 1,200 input + 300 output
@@ -283,10 +277,7 @@ RAG indexing uses CPU-based embeddings, which can be slow for very large project
 
 2. **Reduce file count:** Add more patterns to `.gitignore` or `.dockerignore`
 
-3. **Disable RAG** (not recommended):
-   ```bash
-   export DOCKAI_USE_RAG="false"
-   ```
+3. **Use `.dockerignore`** to exclude large non-essential directories (e.g., `data/`, `logs/`)
 
 Typical indexing times:
 - 100 files: ~1 second

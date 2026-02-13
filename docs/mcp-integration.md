@@ -116,8 +116,8 @@ uv pip install dockai-cli
 {
   "mcpServers": {
     "dockai": {
-      "command": "dockai",
-      "args": []
+      "command": "python",
+      "args": ["-m", "dockai.core.mcp_server"]
     }
   }
 }
@@ -343,10 +343,23 @@ await client.connect("dockai", {
 
 # List available tools
 tools = await client.list_tools()
-print(tools)  # ['build_dockerfile', 'analyze_project', ...]
+print(tools)  # ['analyze_project', 'generate_dockerfile_content', 'validate_dockerfile', 'run_full_workflow']
 
-# Use DockAI to build Dockerfile
-result = await client.call_tool("build_dockerfile", {
+# Analyze a project
+analysis = await client.call_tool("analyze_project", {
+    "path": "/path/to/project"
+})
+print(analysis)
+
+# Generate a Dockerfile
+dockerfile = await client.call_tool("generate_dockerfile_content", {
+    "path": "/path/to/project",
+    "instructions": "Use Alpine base image"
+})
+print(dockerfile)
+
+# Run the full workflow (analyze, generate, validate, retry)
+result = await client.call_tool("run_full_workflow", {
     "path": "/path/to/project"
 })
 print(result)
@@ -356,46 +369,56 @@ print(result)
 
 When DockAI is running as an MCP server, it exposes the following tools:
 
-### `build_dockerfile`
+### `analyze_project`
 
-**Description:** Analyzes a project and generates a production-ready Dockerfile.
+**Description:** Analyzes a project directory to determine Docker requirements without generating a Dockerfile.
 
 **Parameters:**
 - `path` (string, required): Absolute path to the project directory
-- `verbose` (boolean, optional): Enable verbose logging (default: false)
 
 **Returns:**
-- `dockerfile_content` (string): The generated Dockerfile
-- `validation_result` (object): Validation results (build, lint, security)
-- `usage_stats` (object): Token usage statistics
+- A text summary including detected stack, project type, build/start commands, suggested base image, and critical files
+
+### `generate_dockerfile_content`
+
+**Description:** Generates a production-ready Dockerfile for the given project. Does NOT write to disk — returns the Dockerfile content as text.
+
+**Parameters:**
+- `path` (string, required): Absolute path to the project directory
+- `instructions` (string, optional): Custom instructions (e.g., "Use Alpine", "Expose port 3000")
+
+**Returns:**
+- The generated Dockerfile content as a string
 
 **Example:**
 ```json
 {
   "path": "/Users/username/projects/my-app",
-  "verbose": false
+  "instructions": "Use Node.js 20 Alpine"
 }
 ```
 
-### `analyze_project`
+### `validate_dockerfile`
 
-**Description:** Analyzes a project without generating a Dockerfile.
+**Description:** Validates a Dockerfile by building and running it against the project.
+
+**Parameters:**
+- `path` (string, required): Absolute path to the project directory (build context)
+- `dockerfile_content` (string, required): The Dockerfile content to validate
+
+**Returns:**
+- A validation result message (e.g., "Validation Success: ..." or "Validation Failed: ...")
+
+### `run_full_workflow`
+
+**Description:** Executes the full DockAI agentic workflow — identical to the CLI `dockai build` command. Runs the complete pipeline: Scan → Analyze → Plan → Generate → Validate → Fix (up to 3 retries).
 
 **Parameters:**
 - `path` (string, required): Absolute path to the project directory
+- `instructions` (string, optional): Custom instructions for the agents
 
 **Returns:**
-- `analysis` (object): Project analysis (type, language, frameworks, etc.)
-
-### `validate_dockerfile`
-
-**Description:** Validates an existing Dockerfile.
-
-**Parameters:**
-- `path` (string, required): Path to directory containing Dockerfile
-
-**Returns:**
-- `validation_result` (object): Validation results
+- A summary including the final Dockerfile content, validation status, and retry count
 
 ## Examples
 
@@ -410,7 +433,7 @@ Generate a Dockerfile for my Python Flask app in ~/projects/flask-api
 ```
 I'll use DockAI to create a Dockerfile for your Flask application.
 
-[Executes: build_dockerfile with path ~/projects/flask-api]
+[Executes: run_full_workflow with path ~/projects/flask-api]
 
 I've created a production-ready Dockerfile for your Flask API with:
 - Python 3.11 slim base image
